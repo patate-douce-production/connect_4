@@ -51,12 +51,11 @@ class Grid{
 		}
 		if(this.winner!=0){
 			ctx.font = this.dim.x/12+'px Trebuchet MS';
-			ctx.fillStyle = this.winner;
-			ctx.fillText	('La couleur '+this.winner+' a gagné.',
-			this.dim.y/20, this.dim.x/4, this.dim.x/10*9);
+			var msg = 'Le '+this.winner.name+' a gagné !';
+			ctx.fillStyle = this.winner.color;
+			ctx.fillText	(msg, this.dim.y/20, this.dim.x/4, this.dim.x/10*9);
 			ctx.strokeStyle = 'black';
-			ctx.strokeText	('La couleur '+this.winner+' a gagné.',
-			this.dim.y/20, this.dim.x/4, this.dim.x/10*9);
+			ctx.strokeText	(msg, this.dim.y/20, this.dim.x/4, this.dim.x/10*9);
 		}
 	}
 	play(player, no_column){
@@ -68,6 +67,10 @@ class Grid{
 					this.setPiece(no_column, i, player.color);
 					this.player_await++;
 					this.player_await%=this.players.length;
+					for (var i = 0; i < connect_4.elems.player_await.length; i++) {
+						connect_4.elems.player_await[i].innerText = this.players[this.player_await].name;
+						connect_4.elems.player_await[i].style.color = this.players[this.player_await].color;
+					}
 					this.verif();
 					break;
 				}
@@ -92,7 +95,10 @@ class Grid{
 		console.log('On vérifie que aucun joueur n\'a encore gagné.');
 
       // variables de la fonction
-		var colors_verif = ['red', 'yellow'], color;
+		var colors_verif = Array(), color;
+		for (var i = 0; i < this.players.length; i++) {
+			colors_verif.push(this.players[i].color);
+		}
 		var i,j,k;
 		var columns, rows, diag_m, diag_d, piece;
 		var winner = this.winner;
@@ -187,8 +193,9 @@ class Grid{
 		var winner = this.players[id_player];
 		console.log('Le joueur '+winner.name+' gagne !');
 		this.winner = winner;
-		for (var i = 0; i < winner_elems.length; i++) {
-			winner_elems[i].innerText = winner.name;
+		for (var i = 0; i < connect_4.elems.winner.length; i++) {
+			connect_4.elems.winner[i].innerText = winner.name;
+			connect_4.elems.winner[i].style.color = winner.color;
 		}
 	}
 }
@@ -205,6 +212,14 @@ class Player{
 	affect(grid){
 		this.grid = grid;
 		grid.players.push(this);
+		var text = '';
+		for (var i = 0; i < grid.players.length; i++) {
+			text+='<li style=\'color: '+grid.players[i].color+'\'>'+grid.players[i].name+'</li>';
+		}
+		for (var i = 0; i < connect_4.elems.players_list.length; i++) {
+			connect_4.elems.players_list[i].innerHTML = text;
+		}
+		console.log(text);
 	}
 }
 
@@ -213,7 +228,7 @@ var connect_4 = {
 	elems:	{},
 	players: [
 		new Player('joueur 1','red'),
-		new Player('joueur 2','yellow')
+		new Player('joueur 2','rgb(200,200,0)')
 	],
 	grid:		0,
 	// methodes
