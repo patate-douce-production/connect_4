@@ -60,7 +60,7 @@ class Grid{
 	}
 	play(player, no_column){
 		if(this.players[this.player_await].color == player.color&&this.winner==0){
-			console.log('Le joueur '+player.color+' joue la collone '+no_column+'.');
+			console.log(player.name+' joue la collone '+no_column+'.');
 			var column = this.pieces[no_column];
 			for (var i = column.length-1; i >= 0; i--) {
 				if(column[i].color == 'white'){
@@ -79,7 +79,8 @@ class Grid{
 		}
 	}
 	setPiece(x, y, color){
-		console.log('Un jeton de couleur '+color+' se positionne en x:'+x+' y:'+y);
+		if(color!='white')
+			console.log('Un jeton de couleur '+color+' se positionne en x:'+x+' y:'+y);
 		var rayon = Math.min(
 			this.dim.x/this.nb_pieces.x,
 			this.dim.y/this.nb_pieces.y,
@@ -147,19 +148,20 @@ class Grid{
 		for (i = 0; i < colors_verif.length; i++) {
 			color = colors_verif[i];
 
-			// fonction servant a tester un piecesleau de lignes
+			// fonction servant a tester un tableau de lignes
 			function test_lines(lines){
-				var compteur = 0;
+				var compteur;
+				var j, k;
+				var id_player;
 				for (j = 0; j < lines.length; j++) {
+					compteur=0;
 					var line = lines[j];
-					for (var k = 0; k < line.length; k++) {
+					for (k = 0; k < line.length; k++) {
 						var piece = line[k];
-						// console.log(piece);
-						if(piece.color==color){
+						if(piece.color===color){
 							compteur++;
-							console.log('c: '+compteur);
 							if(compteur>=4){
-								for(var id_player=0;id_player<players.length;id_player++){
+								for(id_player=0;id_player<players.length;id_player++){
 									if(players[id_player].color == color){
 										vthis.choose_winner(id_player);
 									}
@@ -180,7 +182,6 @@ class Grid{
 			test_lines(rows);
 			// on teste les diagonales montantes
 			console.log('on teste les diagonales montantes.');
-			console.log(diag_m);
 			test_lines(diag_m);
 			// on teste les diagonales descendantes
 			console.log('on teste les diagonales descendantes.');
@@ -219,7 +220,6 @@ class Player{
 		for (var i = 0; i < connect_4.elems.players_list.length; i++) {
 			connect_4.elems.players_list[i].innerHTML = text;
 		}
-		console.log(text);
 	}
 }
 
@@ -306,7 +306,7 @@ var connect_4 = {
 					player.play(7);
 				break;
 				default:
-					console.log('La touche n\'est pas reconue.');
+					// console.log('La touche n\'est pas reconue.');
 			}
 		});
 	}
