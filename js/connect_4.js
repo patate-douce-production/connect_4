@@ -1,4 +1,6 @@
-// ce script lance un jeu de puissance 4 (connect 4)
+// ce script lance un jeu de puissance 4 (connect 4) à partir d'éléments dom contenu dans la variable globale 'connect_4.elems'
+
+// Classes des objets utilisé au Puissance 4
 class Piece{
 	constructor(real_pos, rayon, color){
 		this.color = color;
@@ -74,6 +76,7 @@ class Grid{
 		}
 	}
 	setPiece(x, y, color){
+		console.log('Un jeton de couleur '+color+' se positionne en x:'+x+' y:'+y);
 		var rayon = Math.min(
 			this.dim.x/this.nb_pieces.x,
 			this.dim.y/this.nb_pieces.y,
@@ -93,6 +96,8 @@ class Grid{
 		var i,j,k;
 		var columns, rows, diag_m, diag_d, piece;
 		var winner = this.winner;
+		var players = this.players;
+		var vthis = this;
 
       // structure des différents piecesleaux de jetons
 		// verticales
@@ -148,8 +153,11 @@ class Grid{
 							compteur++;
 							console.log('c: '+compteur);
 							if(compteur>=4){
-								console.log('*** La couleur '+color+' gagne.');
-								winner = color;
+								for(var id_player=0;id_player<players.length;id_player++){
+									if(players[id_player].color == color){
+										vthis.choose_winner(id_player);
+									}
+								}
 							}
 						}else{
 							compteur=0;
@@ -172,15 +180,23 @@ class Grid{
 			console.log('on teste les diagonales descendantes.');
 			test_lines(diag_d);
 		}
-
-		this.winner = winner;
 		// console.log(winner);
+	}
+	choose_winner(id_player){
+		console.log(this);
+		var winner = this.players[id_player];
+		console.log('Le joueur '+winner.name+' gagne !');
+		this.winner = winner;
+		for (var i = 0; i < winner_elems.length; i++) {
+			winner_elems[i].innerText = winner.name;
+		}
 	}
 }
 
 class Player{
-	constructor(color){
+	constructor(name, color){
 		this.color = color;
+		this.name = name;
 		this.grid = 0;
 	}
 	play(no_column){
@@ -192,73 +208,91 @@ class Player{
 	}
 }
 
-var player1 = new Player('red');
-var player2 = new Player('yellow');
+var connect_4 = {
+	// attributs
+	elems:	{},
+	players: [
+		new Player('joueur 1','red'),
+		new Player('joueur 2','yellow')
+	],
+	grid:		0,
+	// methodes
+	// fonction qui dessine la partie
+	draw:		function(){
+		var cvs = connect_4.elems.cvs;
+		var ctx = cvs.getContext('2d');
+		if(ctx){
+			ctx.clearRect(0, 0, cvs.clientWidth ,cvs.clientHeight);
+			connect_4.grid.draw(ctx);
+		}
 
-var draw = function(){};
-var ctx = 0;
+	},
+	// fonction qui démare la partie
+	start:	function(){
+		console.log('On lance la partie.');
+		// on récupère le canvas
+		var cvs		= connect_4.elems.cvs;
 
-window.onload = function(){
-	// Le canvas
-	var cvs = document.getElementById('cvs');
-	var dim = {x: cvs.clientWidth, y: cvs.clientHeight};
-	if(!cvs.getContext('2d')){
-		return false;
+		// on récupère les dimesions du canvas
+		var dim_cvs	= {x: cvs.clientWidth, y: cvs.clientHeight};
+
+		// on récupère le context du canvas
+		var ctx		= 0;
+		if(!cvs.getContext('2d')){
+			ctx = cvs.getContext('2d');
+		}
+
+		// on crée le jeu
+		connect_4.grid = new Grid(dim_cvs);
+
+		// on y affecte les joueurs
+		connect_4.players[0].affect(connect_4.grid);
+		connect_4.players[1].affect(connect_4.grid);
+
+		// On dessine en boucle
+		window.setInterval(connect_4.draw,100);
+
+		// On réagit au touches de clavier
+		document.addEventListener('keydown',function(e){
+			var key = e.which;
+			var player = connect_4.grid.players[connect_4.grid.player_await];
+			// console.log('click sur une touche de clavier '+key);
+			switch (key) {
+				// valeur 0
+				case 96:
+					player.play(0);
+					break;
+				// valeur 1
+				case 97:
+					player.play(1);
+				break;
+				// valeur 2
+				case 98:
+					player.play(2);
+				break;
+				// valeur 3
+				case 99:
+					player.play(3);
+				break;
+				// valeur 4
+				case 100:
+					player.play(4);
+				break;
+				// valeur 5
+				case 101:
+					player.play(5);
+				break;
+				// valeur 6
+				case 102:
+					player.play(6);
+				break;
+				// valeur 7
+				case 103:
+					player.play(7);
+				break;
+				default:
+					console.log('La touche n\'est pas reconue.');
+			}
+		});
 	}
-	ctx = cvs.getContext('2d');
-
-	game = new Grid(dim);
-	player1.affect(game);
-	player2.affect(game);
-
-	draw = function(ctx){
-		// console.log('draw');
-		ctx.clearRect(0,0,dim.x,dim.y);
-		game.draw(ctx);
-	}
-	// le conteneur d'infos
-	var infos = document.getElementById('infos');
 }
-window.setInterval('draw(ctx)',1000/10);
-
-document.addEventListener('keydown',function(e){
-	var key = e.which;
-	var player = game.players[game.player_await];
-	console.log('click sur une touche de clavier '+key);
-	switch (key) {
-		// valeur 0
-		case 96:
-			player.play(0);
-			break;
-		// valeur 1
-		case 97:
-			player.play(1);
-		break;
-		// valeur 2
-		case 98:
-			player.play(2);
-		break;
-		// valeur 3
-		case 99:
-			player.play(3);
-		break;
-		// valeur 4
-		case 100:
-			player.play(4);
-		break;
-		// valeur 5
-		case 101:
-			player.play(5);
-		break;
-		// valeur 6
-		case 102:
-			player.play(6);
-		break;
-		// valeur 7
-		case 103:
-			player.play(7);
-		break;
-		default:
-			console.log('La touche n\'est pas reconue.');
-	}
-});
