@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset=utf-8 />
@@ -23,16 +23,16 @@
 window.onload = function(){
 	console.log('On charge les différents élements de la page.');
 	// Le canvas
-	connect_4.elems.cvs = document.getElementById('cvs');
+	connect_4.DOM.cvs = document.getElementById('cvs');
 
 	// affichage du nom du vainqueur
-	connect_4.elems.winner = document.getElementsByClassName('winner');
+    connect_4.DOM.winner = document.getElementsByClassName('winner');
 
 	// liste des joueurs
-	connect_4.elems.players_list = document.getElementsByClassName('players_list');
+    connect_4.DOM.players_list = document.getElementsByClassName('players_list');
 
 	// Le joueur attendu
-	connect_4.elems.player_await = document.getElementsByClassName('player_await');
+    connect_4.DOM.player_await = document.getElementsByClassName('player_await');
 
 	console.log(connect_4.elems);
 	connect_4.start();
