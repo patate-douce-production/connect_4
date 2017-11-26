@@ -371,7 +371,7 @@ var connect_4 = {
         this.DOM.cvs.addEventListener('click', function (e) {
             var element_rect = connect_4.DOM.cvs.getBoundingClientRect();
             var grid = connect_4.grid;
-            grid.play(grid.players[grid.player_await], parseInt(e.clientX - element_rect.left * 7 / element_rect.width));
+            grid.play(grid.players[grid.player_await], parseInt((e.clientX - element_rect.left) * 7 / element_rect.width));
         })
 	}
 }
