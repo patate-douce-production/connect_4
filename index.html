@@ -19,23 +19,27 @@
 	</body>
 	<script type="text/javascript" src=js/connect_4.js ></script>
 	<script type="text/javascript">
-// On charge les différents élements de la page.
-window.onload = function(){
-	console.log('On charge les différents élements de la page.');
-	// Le canvas
-	connect_4.DOM.cvs = document.getElementById('cvs');
+        // On charge les différentes textures
+        connect_4.textures['classic'] = new Image();
+        connect_4.textures['classic'].src = 'img/classic.png';
 
-	// affichage du nom du vainqueur
-    connect_4.DOM.winner = document.getElementsByClassName('winner');
+        // On charge les différents élements de la page.
+        window.onload = function(){
+	        console.log('On charge les différents élements de la page.');
+	        // Le canvas
+	        connect_4.DOM.cvs = document.getElementById('cvs');
 
-	// liste des joueurs
-    connect_4.DOM.players_list = document.getElementsByClassName('players_list');
+	        // affichage du nom du vainqueur
+            connect_4.DOM.winner = document.getElementsByClassName('winner');
 
-	// Le joueur attendu
-    connect_4.DOM.player_await = document.getElementsByClassName('player_await');
+	        // liste des joueurs
+            connect_4.DOM.players_list = document.getElementsByClassName('players_list');
 
-	// console.log(connect_4.elems);
-	connect_4.start();
-}
+	        // Le joueur attendu
+            connect_4.DOM.player_await = document.getElementsByClassName('player_await');
+
+	        // console.log(connect_4.elems);
+	        connect_4.start();
+        }
 	</script>
 </html>
