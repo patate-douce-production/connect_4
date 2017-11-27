@@ -21,23 +21,23 @@ class Piece{
         ctx.fill();
 	}
     update() {
-        if (this.player != null && this.pos_aff !== this.pos_math) {
-            var i;
-            for (i = 0; i < 10; i++) {
-                /*
-                if (this.pos_aff.x < this.pos_math.x) {
-                    this.pos_aff.x++;
-                } else if (this.pos_aff.x > this.pos_math.x) {
-                    this.pos_aff.x--;
-                }
-                */
-                if (this.pos_aff.y < this.pos_math.y) {
-                    this.pos_aff.y++;
-                } else if (this.pos_aff.y > this.pos_math.y) {
-                    this.pos_aff.y--;
-                }
+        if (this.player == null || (this.pos_aff.x == this.pos_math.x && this.pos_aff.y == this.pos_math.y))
+            return false;
+        for (let i = 0; i < 13; i++) {
+             /*
+            if (this.pos_aff.x < this.pos_math.x) {
+                this.pos_aff.x++;
+            } else if (this.pos_aff.x > this.pos_math.x) {
+                this.pos_aff.x--;
+            }
+            */
+            if (this.pos_aff.y < this.pos_math.y) {
+                this.pos_aff.y++;
+            } else if (this.pos_aff.y > this.pos_math.y) {
+                this.pos_aff.y--;
             }
         }
+        return true;
 	}
 }
 
@@ -62,7 +62,7 @@ class Grid{
                 this.setPiece(null, { x: i, y: j });
 			}
         }
-        console.log(this.pieces);
+        // console.log(this.pieces);
 	}
     draw(ctx) {
         // console.log('On affiche la grille.')
@@ -186,7 +186,7 @@ class Grid{
 			);
 		}
 
-      // on remplit les tableaux
+        // on remplit les tableaux
 		for (i = 0; i < this.pieces.length; i++) {
 			for (j = 0; j < this.pieces[i].length; j++) {
 				piece = this.pieces[i][j];
@@ -231,7 +231,7 @@ class Grid{
 			//console.log('on teste les verticales.');
 			test_lines(columns);
 			// on teste les horizontales
-			console.log('on teste les horizontales.');
+			// console.log('on teste les horizontales.');
 			test_lines(rows);
 			// on teste les diagonales montantes
 			//console.log('on teste les diagonales montantes.');
@@ -240,7 +240,7 @@ class Grid{
 			//console.log('on teste les diagonales descendantes.');
 			test_lines(diag_d);
 		}
-		console.log(winner);
+		// console.log(winner);
 	}
 	choose_winner(id_player){
 		// console.log(this);
@@ -253,12 +253,14 @@ class Grid{
 		}
 	}
     update() {
-        var i, j;
-		for (i = 0; i < this.pieces.length; i++) {
-			for (j = 0; j < this.pieces[j].length; j++) {
-				this.pieces[i][j].update();
+        var rep = false;
+		for (let i = 0; i < this.pieces.length; i++) {
+			for (let j = 0; j < this.pieces[j].length; j++) {
+                if (this.pieces[i][j].update())
+                    rep = true;
 			}
-		}
+        }
+        return rep;
 	}
 }
 
@@ -317,12 +319,14 @@ var connect_4 = {
 		connect_4.players[0].affect(connect_4.grid);
         connect_4.players[1].affect(connect_4.grid);
 
+        this.draw();
         window.setInterval(function () {
             // On actualise la grille
-            connect_4.grid.update();
-            // On dessine en boucle
-            connect_4.draw();
-        }, 1000/20);
+            if (connect_4.grid.update()) {
+                // On dessine en boucle
+                connect_4.draw();
+            }
+        }, 1000/17);
 
 		// On réagit au touches de clavier
 		document.addEventListener('keydown',function(e){
@@ -372,6 +376,7 @@ var connect_4 = {
             var element_rect = connect_4.DOM.cvs.getBoundingClientRect();
             var grid = connect_4.grid;
             grid.play(grid.players[grid.player_await], parseInt((e.clientX - element_rect.left) * 7 / element_rect.width));
+            return false;
         })
 	}
 }
