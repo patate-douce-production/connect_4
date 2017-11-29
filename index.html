@@ -12,8 +12,15 @@
 				Le joueur vainqueur est <span class=winner >inconnu</span>.<br>
 				Le joueur en attente est <span class=player_await >inconnu</span>.
 			</p>
+            <p>
+                <label for="theme_select">Texture utilisée: </label>
+                <select id="theme_select">
+                    <option selected>classic</option>
+                    <option>minecraft</option>
+                </select>
+            </p>
 		</div>
-		<canvas id=cvs width=350 height=300>
+		<canvas id=cvs width=350 height=300 style="border: 1px solid black;">
 			Votre navigateur ne supporte pas HTML5. Veuillez le mettre à jour afin de pouvoir afficher cette page dans son intégralité.
 		</canvas>
 	</body>
@@ -22,6 +29,8 @@
         // On charge les différentes textures
         connect_4.textures['classic'] = new Image();
         connect_4.textures['classic'].src = 'img/classic.png';
+        connect_4.textures['minecraft'] = new Image();
+        connect_4.textures['minecraft'].src = 'img/minecraft.png';
 
         // On charge les différents élements de la page.
         window.onload = function(){
@@ -37,6 +46,9 @@
 
 	        // Le joueur attendu
             connect_4.DOM.player_await = document.getElementsByClassName('player_await');
+
+            // Le thème selectionné
+            connect_4.DOM.theme_select = document.getElementById('theme_select');
 
 	        // console.log(connect_4.elems);
 	        connect_4.start();

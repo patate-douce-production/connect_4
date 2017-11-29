@@ -11,7 +11,7 @@ class Piece{
 		this.rayon = rayon;
 	}
     draw(ctx, texture) {
-        ctx.drawImage(texture, this.player.IDColor * 50, 300, 50, 50, this.pos_aff.x-50/2, this.pos_aff.y-50/2, 50, 50);
+        ctx.drawImage(texture, this.player.IDColor * texture.width / 7, texture.height / 13 * 6, texture.width /7 , texture.height / 13, this.pos_aff.x-50/2, this.pos_aff.y-50/2, 50, 50);
 	}
     update() {
         if (this.player == null || (this.pos_aff.x == this.pos_math.x && this.pos_aff.y == this.pos_math.y))
@@ -62,7 +62,7 @@ class Grid{
     draw(ctx) {
         var texture = connect_4.textures[this.IDTexture];
         // image de fond
-        ctx.drawImage(texture, 0, 0, 350, 300, 0, 350, 300, 350);
+        ctx.drawImage(texture, 0, texture.height / 13 * 7, texture.width, texture.height/13*6, 0, 0, 350, 300);
         for (let i = 0; i < this.pieces.length; i++) {
             let colone = this.pieces[i];
             for (let j = 0; j < colone.length; j++) {
@@ -72,7 +72,7 @@ class Grid{
             }
         }
         // plateau a l'avant
-        ctx.drawImage(texture, 0, 0, 350, 300, 0, 0  , 350, 300);
+        ctx.drawImage(texture, 0, 0, texture.width, texture.height / 13 * 6, 0, 0  , 350, 300);
 		if(this.winner!=0){
 			ctx.font = this.dim.x/10+'px Trebuchet MS';
 			var msg = 'Le '+this.winner.name+' a gagné !';
@@ -365,6 +365,12 @@ var connect_4 = {
             var grid = connect_4.grid;
             grid.play(grid.players[grid.player_await], parseInt((e.clientX - element_rect.left) * 7 / element_rect.width));
             return false;
+        })
+
+        this.DOM.theme_select.addEventListener('input', function (e) {
+            console.log(e.target);
+            connect_4.grid.IDTexture = e.target.selectedOptions[0].innerHTML;
+            connect_4.draw();
         })
 	}
 }
