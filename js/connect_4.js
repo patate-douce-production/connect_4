@@ -130,9 +130,11 @@ class Grid{
             x: x,
             y: y
         }, {
-            x: x,
-            y: 0
-        })
+                x: x,
+                y: 0
+            }
+        );
+        connect_4.animation.start();
     }
     verif() {
         console.log('On vérifie que aucun joueur n\'a encore gagné.');
@@ -282,6 +284,30 @@ var connect_4 = {
 		new Player('joueur 2' ,1 ,'rgb(200,200,0)')
 	],
 	grid:		0,
+    animation: {
+        interval: 0,
+        start: function () {
+            if (this.interval != 0)
+                return false;
+            this.interval = window.setInterval(function () {
+                // On actualise la grille
+                if (connect_4.grid.update()) {
+                    // On dessine en boucle
+                    connect_4.draw();
+                } else {
+                    connect_4.animation.stop();
+                }
+            }, 1000 / 17);
+            return true;
+        },
+        stop: function () {
+            if (this.interval == 0)
+                return false;
+            window.clearInterval(this.interval);
+            this.interval = 0;
+            return true;
+        }
+    },
 	// methodes
 	// fonction qui dessine la partie
     draw: function () {
@@ -308,13 +334,6 @@ var connect_4 = {
         connect_4.players[1].affect(connect_4.grid);
 
         this.draw();
-        window.setInterval(function () {
-            // On actualise la grille
-            if (connect_4.grid.update()) {
-                // On dessine en boucle
-                connect_4.draw();
-            }
-        }, 1000/17);
 
 		// On réagit au touches de clavier
 		document.addEventListener('keydown',function(e){
