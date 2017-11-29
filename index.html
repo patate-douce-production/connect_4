@@ -19,6 +19,28 @@
                     <option>minecraft</option>
                 </select>
             </p>
+            <p>
+                <label for="select_color_1">Première couleur utilisée: </label>
+                <select id="select_color_1" class="select_color">
+                    <option selected>rouge</option>
+                    <option>jaune</option>
+                    <option>vert</option>
+                    <option>cyan</option>
+                    <option>bleu</option>
+                    <option>magenta</option>
+                    <option>noir</option>
+                </select>
+                <label for="select_color_2">Seconde couleur utilisée: </label>
+                <select id="select_color_2" class="select_color">
+                    <option selected>rouge</option>
+                    <option>jaune</option>
+                    <option>vert</option>
+                    <option>cyan</option>
+                    <option>bleu</option>
+                    <option>magenta</option>
+                    <option>noir</option>
+                </select>
+            </p>
 		</div>
 		<canvas id=cvs width=350 height=300 style="border: 1px solid black;">
 			Votre navigateur ne supporte pas HTML5. Veuillez le mettre à jour afin de pouvoir afficher cette page dans son intégralité.
@@ -49,6 +71,9 @@
 
             // Le thème selectionné
             connect_4.DOM.theme_select = document.getElementById('theme_select');
+
+            // La première couleur selectionnée
+            connect_4.DOM.select_color = document.getElementsByClassName('select_color')
 
 	        // console.log(connect_4.elems);
 	        connect_4.start();

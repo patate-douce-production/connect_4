@@ -90,11 +90,8 @@ class Grid{
                 if (column[i].player == null) {
                     this.putPiece(player, no_column, i);
 					this.player_await++;
-					this.player_await%=this.players.length;
-					for (var i = 0; i < connect_4.DOM.player_await.length; i++) {
-                        connect_4.DOM.player_await[i].innerText = this.players[this.player_await].name;
-                        connect_4.DOM.player_await[i].style.color = this.players[this.player_await].color;
-					}
+                    this.player_await %= this.players.length;
+                    connect_4.displayPlayers();
 					this.verif();
 					break;
 				}
@@ -259,16 +256,12 @@ class Player{
 	}
 	affect(grid){
 		this.grid = grid;
-		grid.players.push(this);
-		var text = '';
-		for (var i = 0; i < grid.players.length; i++) {
-			text+='<li style=\'color: '+grid.players[i].color+'\'>'+grid.players[i].name+'</li>';
-		}
-        for (var i = 0; i < connect_4.DOM.players_list.length; i++) {
-            connect_4.DOM.players_list[i].innerHTML = text;
-		}
-	}
+        grid.players.push(this);
+        connect_4.displayPlayers();
+    }
 }
+
+colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta', 'black'];
 
 var connect_4 = {
 	// attributs
@@ -278,9 +271,22 @@ var connect_4 = {
     textures: [],
 
 	players: [
-		new Player('joueur 1' ,0 ,'red'),
-		new Player('joueur 2' ,1 ,'rgb(200,200,0)')
-	],
+        new Player('joueur 1', 0,colors[0]),
+        new Player('joueur 2', 1,colors[1])
+    ],
+    displayPlayers: function () {
+        var text = '';
+        for (let i = 0; i < connect_4.players.length; i++) {
+            text += '<li style=\'color: ' + connect_4.players[i].color + '\'>' + connect_4.players[i].name + '</li>';
+        }
+        for (let i = 0; i < connect_4.DOM.players_list.length; i++) {
+            connect_4.DOM.players_list[i].innerHTML = text;
+        }
+        for (var i = 0; i < connect_4.DOM.player_await.length; i++) {
+            connect_4.DOM.player_await[i].innerText = connect_4.players[connect_4.grid.player_await].name;
+            connect_4.DOM.player_await[i].style.color = connect_4.players[connect_4.grid.player_await].color;
+        }
+    },
 	grid:		0,
 	// methodes
 	// fonction qui dessine la partie
@@ -372,5 +378,15 @@ var connect_4 = {
             connect_4.grid.IDTexture = e.target.selectedOptions[0].innerHTML;
             connect_4.draw();
         })
+
+        for (let i = 0; i < this.DOM.select_color.length; i++) {
+            this.DOM.select_color[i].addEventListener('input', function (e) {
+                connect_4.players[i].IDColor = e.target.selectedOptions[0].index;
+                colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta', 'black'];
+                connect_4.players[i].color = colors[e.target.selectedOptions[0].index];
+                connect_4.draw();
+                connect_4.displayPlayers();
+            })
+        }
 	}
 }
