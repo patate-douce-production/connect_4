@@ -10,15 +10,8 @@ class Piece{
         this.pos_math = pos_math;
 		this.rayon = rayon;
 	}
-    draw(ctx) {
-        if (this.player == null) {
-            ctx.fillStyle = 'white';
-        } else {
-            ctx.fillStyle = this.player.color;
-        }
-        ctx.beginPath();
-        ctx.arc(this.pos_aff.x, this.pos_aff.y, this.rayon, 0, Math.PI * 2, 0);
-        ctx.fill();
+    draw(ctx, texture) {
+        ctx.drawImage(texture, this.player.IDColor * texture.width / 7, texture.height / 13 * 6, texture.width /7 , texture.height / 13, this.pos_aff.x-50/2, this.pos_aff.y-50/2, 50, 50);
 	}
     update() {
         if (this.player == null || (this.pos_aff.x == this.pos_math.x && this.pos_aff.y == this.pos_math.y))
@@ -53,6 +46,8 @@ class Grid{
 		this.player_await = 0;
 		// la couleur gagnante
         this.winner = 0;
+        // id de la texture utilisée
+        this.IDTexture = 'classic';
 		// tableau de pieces
 		this.pieces= Array();
 		for (var i = 0; i < this.nb_pieces.x; i++) {
@@ -65,31 +60,19 @@ class Grid{
         // console.log(this.pieces);
 	}
     draw(ctx) {
-        // console.log('On affiche la grille.')
-		ctx.fillStyle = 'blue';
-        ctx.fillRect(0, 0, this.dim.x, this.dim.y);
-        for (var i = 0; i < this.pieces.length; i++) {
-            var colone = this.pieces[i];
-            var rayon = Math.min(
-                this.dim.x / this.nb_pieces.x,
-                this.dim.y / this.nb_pieces.y,
-            ) / 3;
-            for (var j = 0; j < colone.length; j++) {
-                var piece = new Piece(null, {
-                    x: this.dim.x / this.nb_pieces.x * (i + 0.5),
-                    y: this.dim.y / this.nb_pieces.y * (j + 0.5)
-                }, null, rayon);
-                piece.draw(ctx);
+        var texture = connect_4.textures[this.IDTexture];
+        // image de fond
+        ctx.drawImage(texture, 0, texture.height / 13 * 7, texture.width, texture.height/13*6, 0, 0, 350, 300);
+        for (let i = 0; i < this.pieces.length; i++) {
+            let colone = this.pieces[i];
+            for (let j = 0; j < colone.length; j++) {
+                let piece = colone[j];
+                if (piece.player != null)
+                    piece.draw(ctx, texture);
             }
         }
-		for (var i = 0; i < this.pieces.length; i++) {
-			var colone = this.pieces[i];
-			for (var j = 0; j < colone.length; j++) {
-                var piece = colone[j];
-                if (piece.player != null)
-				    piece.draw(ctx);
-			}
-		}
+        // plateau a l'avant
+        ctx.drawImage(texture, 0, 0, texture.width, texture.height / 13 * 6, 0, 0  , 350, 300);
 		if(this.winner!=0){
 			ctx.font = this.dim.x/10+'px Trebuchet MS';
 			var msg = 'Le '+this.winner.name+' a gagné !';
@@ -107,11 +90,8 @@ class Grid{
                 if (column[i].player == null) {
                     this.putPiece(player, no_column, i);
 					this.player_await++;
-					this.player_await%=this.players.length;
-					for (var i = 0; i < connect_4.DOM.player_await.length; i++) {
-                        connect_4.DOM.player_await[i].innerText = this.players[this.player_await].name;
-                        connect_4.DOM.player_await[i].style.color = this.players[this.player_await].color;
-					}
+                    this.player_await %= this.players.length;
+                    connect_4.displayPlayers();
 					this.verif();
 					break;
 				}
@@ -267,8 +247,9 @@ class Grid{
 }
 
 class Player{
-	constructor(name, color){
-		this.color = color;
+	constructor(name, ID, color){
+        this.color = color;
+        this.IDColor = ID;
 		this.name = name;
 		this.grid = 0;
 	}
@@ -277,24 +258,37 @@ class Player{
 	}
 	affect(grid){
 		this.grid = grid;
-		grid.players.push(this);
-		var text = '';
-		for (var i = 0; i < grid.players.length; i++) {
-			text+='<li style=\'color: '+grid.players[i].color+'\'>'+grid.players[i].name+'</li>';
-		}
-        for (var i = 0; i < connect_4.DOM.players_list.length; i++) {
-            connect_4.DOM.players_list[i].innerHTML = text;
-		}
-	}
+        grid.players.push(this);
+        connect_4.displayPlayers();
+    }
 }
+
+colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta', 'black'];
 
 var connect_4 = {
 	// attributs
-	DOM:{},
+    DOM: {},
+
+    // tableau contenant l'image correspondant a chaque thème
+    textures: [],
+
 	players: [
-		new Player('joueur 1','red'),
-		new Player('joueur 2','rgb(200,200,0)')
-	],
+        new Player('joueur 1', 0,colors[0]),
+        new Player('joueur 2', 1,colors[1])
+    ],
+    displayPlayers: function () {
+        var text = '';
+        for (let i = 0; i < connect_4.players.length; i++) {
+            text += '<li style=\'color: ' + connect_4.players[i].color + '\'>' + connect_4.players[i].name + '</li>';
+        }
+        for (let i = 0; i < connect_4.DOM.players_list.length; i++) {
+            connect_4.DOM.players_list[i].innerHTML = text;
+        }
+        for (var i = 0; i < connect_4.DOM.player_await.length; i++) {
+            connect_4.DOM.player_await[i].innerText = connect_4.players[connect_4.grid.player_await].name;
+            connect_4.DOM.player_await[i].style.color = connect_4.players[connect_4.grid.player_await].color;
+        }
+    },
 	grid:		0,
     animation: {
         interval: 0,
@@ -397,5 +391,21 @@ var connect_4 = {
             grid.play(grid.players[grid.player_await], parseInt((e.clientX - element_rect.left) * 7 / element_rect.width));
             return false;
         })
+
+        this.DOM.theme_select.addEventListener('input', function (e) {
+            console.log(e.target);
+            connect_4.grid.IDTexture = e.target.selectedOptions[0].innerHTML;
+            connect_4.draw();
+        })
+
+        for (let i = 0; i < this.DOM.select_color.length; i++) {
+            this.DOM.select_color[i].addEventListener('input', function (e) {
+                connect_4.players[i].IDColor = e.target.selectedOptions[0].index;
+                colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta', 'black'];
+                connect_4.players[i].color = colors[e.target.selectedOptions[0].index];
+                connect_4.draw();
+                connect_4.displayPlayers();
+            })
+        }
 	}
 }

@@ -12,30 +12,71 @@
 				Le joueur vainqueur est <span class=winner >inconnu</span>.<br>
 				Le joueur en attente est <span class=player_await >inconnu</span>.
 			</p>
+            <p>
+                <label for="theme_select">Texture utilisée: </label>
+                <select id="theme_select">
+                    <option selected>classic</option>
+                    <option>minecraft</option>
+                </select>
+            </p>
+            <p>
+                <label for="select_color_1">Première couleur utilisée: </label>
+                <select id="select_color_1" class="select_color">
+                    <option selected>rouge</option>
+                    <option>jaune</option>
+                    <option>vert</option>
+                    <option>cyan</option>
+                    <option>bleu</option>
+                    <option>magenta</option>
+                    <option>noir</option>
+                </select>
+                <label for="select_color_2">Seconde couleur utilisée: </label>
+                <select id="select_color_2" class="select_color">
+                    <option selected>rouge</option>
+                    <option>jaune</option>
+                    <option>vert</option>
+                    <option>cyan</option>
+                    <option>bleu</option>
+                    <option>magenta</option>
+                    <option>noir</option>
+                </select>
+            </p>
 		</div>
-		<canvas id=cvs width=350 height=300>
+		<canvas id=cvs width=350 height=300 style="border: 1px solid black;">
 			Votre navigateur ne supporte pas HTML5. Veuillez le mettre à jour afin de pouvoir afficher cette page dans son intégralité.
 		</canvas>
 	</body>
 	<script type="text/javascript" src=js/connect_4.js ></script>
 	<script type="text/javascript">
-// On charge les différents élements de la page.
-window.onload = function(){
-	console.log('On charge les différents élements de la page.');
-	// Le canvas
-	connect_4.DOM.cvs = document.getElementById('cvs');
+        // On charge les différentes textures
+        connect_4.textures['classic'] = new Image();
+        connect_4.textures['classic'].src = 'img/classic.png';
+        connect_4.textures['minecraft'] = new Image();
+        connect_4.textures['minecraft'].src = 'img/minecraft.png';
 
-	// affichage du nom du vainqueur
-    connect_4.DOM.winner = document.getElementsByClassName('winner');
+        // On charge les différents élements de la page.
+        window.onload = function(){
+	        console.log('On charge les différents élements de la page.');
+	        // Le canvas
+	        connect_4.DOM.cvs = document.getElementById('cvs');
 
-	// liste des joueurs
-    connect_4.DOM.players_list = document.getElementsByClassName('players_list');
+	        // affichage du nom du vainqueur
+            connect_4.DOM.winner = document.getElementsByClassName('winner');
 
-	// Le joueur attendu
-    connect_4.DOM.player_await = document.getElementsByClassName('player_await');
+	        // liste des joueurs
+            connect_4.DOM.players_list = document.getElementsByClassName('players_list');
 
-	// console.log(connect_4.elems);
-	connect_4.start();
-}
+	        // Le joueur attendu
+            connect_4.DOM.player_await = document.getElementsByClassName('player_await');
+
+            // Le thème selectionné
+            connect_4.DOM.theme_select = document.getElementById('theme_select');
+
+            // La première couleur selectionnée
+            connect_4.DOM.select_color = document.getElementsByClassName('select_color')
+
+	        // console.log(connect_4.elems);
+	        connect_4.start();
+        }
 	</script>
 </html>
